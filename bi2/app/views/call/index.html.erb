@@ -1,0 +1,21 @@
+<div id="top_menu"> 
+</div> 
+
+
+<%= periodically_call_remote :url => {:action => "get_call_status", :user_id => 1155}, 
+                              	:frequency => 2 %> 
+
+
+<script type="text/javascript">
+  function Reload (src_url) {
+  var f = document.getElementById('highrise');
+  f.src = src_url;
+  }
+</script>
+                                
+<iframe id="highrise" height=3000 width=1000 style="display:none;" >
+  Alternative text for browsers that do not understand IFrames.
+</iframe>
+
+
+

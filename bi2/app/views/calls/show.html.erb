@@ -1,0 +1,73 @@
+<p>
+  <b>User:</b>
+  <%=h @call.user %>
+</p>
+
+<p>
+  <b>Bs:</b>
+  <%=h @call.bs_id %>
+</p>
+
+<p>
+  <b>Useruid:</b>
+  <%=h @call.userUid %>
+</p>
+
+<p>
+  <b>Callid:</b>
+  <%=h @call.callid %>
+</p>
+
+<p>
+  <b>Exttrackingid:</b>
+  <%=h @call.extTrackingid %>
+</p>
+
+<p>
+  <b>Callcenteruserid:</b>
+  <%=h @call.callCenterUserId %>
+</p>
+
+<p>
+  <b>State:</b>
+  <%=h @call.state %>
+</p>
+
+<p>
+  <b>Appearance:</b>
+  <%=h @call.appearance %>
+</p>
+
+<p>
+  <b>Personality:</b>
+  <%=h @call.personality %>
+</p>
+
+<p>
+  <b>Calltype:</b>
+  <%=h @call.calltype %>
+</p>
+
+<p>
+  <b>Release cause:</b>
+  <%=h @call.release_cause %>
+</p>
+
+<p>
+  <b>Remote country code:</b>
+  <%=h @call.remote_country_code %>
+</p>
+
+<p>
+  <b>Remote number:</b>
+  <%=h @call.remote_number %>
+</p>
+
+<p>
+  <b>Remote name:</b>
+  <%=h @call.remote_name %>
+</p>
+
+
+<%= link_to 'Edit', edit_call_path(@call) %> |
+<%= link_to 'Back', calls_path %>

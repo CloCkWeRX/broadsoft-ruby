@@ -1,0 +1,39 @@
+<h1>Listing calls</h1>
+
+<table>
+  <tr>
+    <th>Time</th>
+    <th>State</th>
+    <th>Direction</th>
+    <th>Calltype</th>
+    <th>Remote number</th>
+    <th>Call ID</th>    
+  </tr>
+
+<% for call in @calls %>
+  <tr>
+    <td><%=h call.created_at %></td>
+    <td><%= case call.state 
+              when 1 : "Alerting"
+              when 2 : "Connected"
+              when 5 : "Released"  
+            end
+    %></td>
+    <td><%= if call.personality == 1
+               "Incoming"
+             else
+                "Outgoing"
+             end  %></td>
+    <td><%=h call.calltype %></td>
+    <td><%=h call.remote_number %></td>
+    <td><%=h call.callid %></td>    
+    <td><%= link_to 'Show', call %></td>
+    <td><%= link_to 'Edit', edit_call_path(call) %></td>
+    <td><%= link_to 'Destroy', call, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New call', new_call_path %>

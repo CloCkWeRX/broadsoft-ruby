@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  command: MyString
+  additional_data: MyString
+  call_id: MyString
+
+two:
+  command: MyString
+  additional_data: MyString
+  call_id: MyString

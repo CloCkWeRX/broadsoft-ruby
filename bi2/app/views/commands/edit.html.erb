@@ -1,0 +1,27 @@
+<h1>Editing command</h1>
+
+<%= error_messages_for :command %>
+
+<% form_for(@command) do |f| %>
+  <p>
+    <b>Command</b><br />
+    <%= f.text_field :command %>
+  </p>
+
+  <p>
+    <b>Additional data</b><br />
+    <%= f.text_field :additional_data %>
+  </p>
+
+  <p>
+    <b>Call</b><br />
+    <%= f.text_field :call_id %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @command %> |
+<%= link_to 'Back', commands_path %>

@@ -1,0 +1,16 @@
+if @in_call
+  if session[:display_info] == "display"  # only should happen once
+    page.show 'highrise'
+    page.call('Reload', session[:highrise_path])
+    if (session[:unknown_name] == false)
+      page.replace_html 'top_menu', "<A TARGET=\"_blank\" href=\" http://www.google.com/search?source=ig&hl=en&rlz=&q=#{session[:person_name]}&btnG=Google+Search\" >Google this caller</A> " 
+      page.insert_html :bottom, 'top_menu', "|| <A TARGET=\"_blank\" href=\"http://blogsearch.google.com/blogsearch?hl=en&q=#{session[:person_name]}&btnG=Search+Blogs\" >Search Blogs</A>"  
+      page.insert_html :bottom, 'top_menu', "|| <A TARGET=\"_blank\" href=\"http://www.spock.com/q/#{session[:person_name].to_s.gsub!(/\s/,'-')}\" >Social Networking Information</A>"  
+    else
+      page.replace_html 'top_menu', "Unknown inbound caller."
+    end
+  end
+else
+  page.hide 'highrise'
+  page.replace_html 'top_menu', "Not in a call."
+end
