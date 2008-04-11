@@ -4,11 +4,8 @@ class CallController < ApplicationController
   def index
   end
   def get_call_status
-    puts session[:display_info]
-    if session[:display_info].nil?
-      session[:display_info] = "idle"
-    end
     @result = "Not currently in call"
+    puts session[:display_info]
     c = Call.find(:first, :order => "created_at DESC")
     unless c.nil?
       case c.state
@@ -18,17 +15,16 @@ class CallController < ApplicationController
         if session[:display_info] == "display"  
           session[:display_info] = "displayed" 
         end
-        if session[:display_info] == "onhook"
+        if session[:display_info] == "onhook" 
           # only should happen once
-
           # Set the flag in the session to display the information
-          session[:display_info] = "display"                  
-          l = Lead.find(:first, :conditions => ["cell like ?", "%#{c.remote_number}"]) 
+          session[:display_info] = "display"         
+          l = Lead.find(:first, :conditions => ["cell like ? or office_phone like ?", "%#{c.remote_number[-10,10]}", "%#{c.remote_number[-10,10]}"]) 
         
           unless l.nil?
             session[:highrise_path] = "http://thomashowe.highrisehq.com/people/#{l.highrise_lead_id}"
             session[:person_name] = "#{l.first_name} #{l.last_name}"
-            session[:unkown_name] = false
+            session[:unknown_name] = false
           else
             session[:highrise_path] = "http://www.whitepages.com/search/ReversePhone?full_phone=#{c.remote_number}&localtime=survey"
             session[:person_name] = "Unknown"
@@ -36,6 +32,8 @@ class CallController < ApplicationController
           end
         end        
       end
+    else
+      session[:display_info] = "onhook"       
     end
   end
   def dial
