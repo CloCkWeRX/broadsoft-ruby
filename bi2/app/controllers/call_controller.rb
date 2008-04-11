@@ -35,16 +35,6 @@ class CallController < ApplicationController
             session[:unkown_name] = true
           end
         end        
-      
-        person = Contact.find_by_number(c.remote_number)
-        @remote_number = c.remote_number
-        if not person.nil?
-          @name = person.name
-          @person_id = person.basecampid
-        else
-          @name = "Unknown"
-          @person_id =""
-        end
       end
     end
   end
