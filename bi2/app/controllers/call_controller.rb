@@ -4,6 +4,10 @@ class CallController < ApplicationController
   def index
   end
   def get_call_status
+    puts session[:display_info]
+    if session[:display_info].nil?
+      session[:display_info] = "idle"
+    end
     @result = "Not currently in call"
     c = Call.find(:first, :order => "created_at DESC")
     unless c.nil?
@@ -18,7 +22,7 @@ class CallController < ApplicationController
           # only should happen once
 
           # Set the flag in the session to display the information
-          session[:display_info] = "display"         
+          session[:display_info] = "display"                  
           l = Lead.find(:first, :conditions => ["cell like ?", "%#{c.remote_number}"]) 
         
           unless l.nil?
