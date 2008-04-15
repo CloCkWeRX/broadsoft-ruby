@@ -34,7 +34,7 @@
   end
 
   # Startup the Broadworks stack.
-  bs = Broadworks.new("ews.ihs.broadsoft.com", "2208", "thowe1@broadsoft.com", "Password1")
+  bs = Broadworks.new("xxxxxx.com", "2208", "thowe1@broadsoft.com", "yyyyyy")
 
   bs.assign_call_function { |info|
     # We need to put this information into the database.  Let's try that, shall we?
@@ -117,7 +117,7 @@ require 'logger'
    require "broadsoft.rb"
 
    # Startup the Broadworks stack.
-   bs = Broadworks.new("ews.ihs.broadsoft.com", "2208", "thowe1@broadsoft.com", "Password1")
+   bs = Broadworks.new("xxxxxxx.com", "2208", "thowe1@broadsoft.com", "yyyyyy")
   
    
 =end
@@ -128,8 +128,8 @@ class Broadworks < Object
   The initialization function. Host refers to the IP address of the broadworks OCS, port to it's 
   control port. call_client and password are assigned to the user we are monitoring.
 =end
-  def initialize(host, port, call_client, password, logger=nil) 
-    @host, @port, @call_client, @password = host, port, call_client, password
+  def initialize(host, port, call_client, password, call_control = true, logger=nil) 
+    @host, @port, @call_client, @password, @call_control = host, port, call_client, password, call_control
 
     if logger.nil?
       logger = Logger.new(STDOUT)
@@ -138,8 +138,11 @@ class Broadworks < Object
     @logger = logger
 
     logger.info "Program started"
+    logger.info "Running in call control mode" if @call_control
+    logger.info "Running in attendant mode" unless @call_control
+    
+    
     @t = TCPSocket::new(@host, @port)
-
     logger.info "Initializing system"
     send init_script
     response = getResponse
@@ -150,7 +153,7 @@ class Broadworks < Object
     send ack_script(@user_uid)
 
     logger.info "Entering thread"
-    Thread.new do 
+    pid  = Thread.new do 
       while true do
         msg = getResponse
         dispatchMsg msg
@@ -208,7 +211,7 @@ class Broadworks < Object
     end
   end
   
-  def dispatchMsg msg
+  def dispatchMsg msg 
     logger.info "Message received at #{Time.now}"
    
     output = ""        
@@ -219,22 +222,32 @@ class Broadworks < Object
     
     case message["command"][0]["commandType"]
       when "callUpdate"      
+        logger.info "Dispatching call update message"     
         info = message["command"][0]["commandData"][0]["user"][0]["call"][0]
         @call_function.call(info) unless @call_function.nil?  
            
       when "sessionUpdate"
+        logger.info "Dispatching session message"     
         info = message["command"][0]["commandData"][0]["user"][0]
         @session_function.call(info) unless @session_function.nil?    
      
       when "profileUpdate"
+        logger.info "Dispatching profile message"     
         info = message["command"][0]["commandData"][0]["user"][0]
         @profile_function.call(info) unless @profile_function.nil?
+        
+      when "monitoringUsersResponse"
+        logger.info "Dispatching monitor message"     
+        info = message["command"][0]["commandData"][0]["user"][0]
+        @monitor_function.call(info) unless @monitor_function.nil?
+
       else
         puts "Whoa! What was that?"
       end
-    logger.info "dispatchMsg done" 
-  
+    logger.info "dispatchMsg done"   
   end
+  
+  
   def assign_call_function &action
     @call_function = action
   end
@@ -245,23 +258,39 @@ class Broadworks < Object
   def assign_session_function &action
     @session_function = action
   end  
-    
+  def monitor_function &action
+    @monitor_function = action
+  end
+  
   # Commands
   def dial number
-    send dial_script(number)
+    raise "Cannot control a phone when in attendant console mode" unless @call_control
+    send dial_script(number) 
   end
   def redial 
+    raise "Cannot control a phone when in attendant console mode" unless @call_control
     send redial_script
   end
   def hold call_id
+    raise "Cannot control a phone when in attendant console mode" unless @call_control
     send hold_script(call_id)
   end
   def answer call_id
+    raise "Cannot control a phone when in attendant console mode" unless @call_control
     send answer_script(call_id)
   end
   def release call_id
+    raise "Cannot control a phone when in attendant console mode" unless @call_control
     send release_script(call_id)
   end
+  def follow user
+    raise "Cannot control a phone when in control mode" if @call_control
+    send follow_script(user)
+  end
+  def heartbeat
+    send heartbeat_script
+  end
+  
   
   private 
   
@@ -279,6 +308,7 @@ class Broadworks < Object
       </command> 
     </BroadsoftDocument>
   STRING
+  msg.gsub!("CallClient", "AttendantConsole") unless @call_control
   msg.gsub("CALL_CLIENT",@call_client)
   end
   
@@ -297,6 +327,7 @@ class Broadworks < Object
       </command> 
     </BroadsoftDocument> 
   STRING
+  msg.gsub!("CallClient", "AttendantConsole") unless @call_control
   msg.gsub("CALL_CLIENT",@call_client).gsub("SECURE_PASSWORD",secure_password)
   end
 
@@ -314,10 +345,11 @@ class Broadworks < Object
       </command> 
     </BroadsoftDocument>
   STRING
-  msg.gsub("CALL_CLIENT",@call_client).gsub("CALL_USER_UID", user_uid)  
+  msg.gsub!("CallClient", "AttendantConsole") unless @call_control  
+  msg.gsub("CALL_CLIENT",@call_client).gsub("CALL_USER_UID", user_uid)
   end
   
-  def heartbeat_script user_uid
+  def heartbeat_script 
   msg = <<-STRING
   <?xml version="1.0" encoding="UTF-8"?> 
    <BroadsoftDocument protocol="CAP" version="14.0"> 
@@ -330,7 +362,8 @@ class Broadworks < Object
      </command> 
    </BroadsoftDocument> 
   STRING
-  msg.gsub("CALL_CLIENT",@call_client).gsub("CALL_USER_UID", user_uid)  
+  msg.gsub!("CallClient", "AttendantConsole") unless @call_control  
+  msg.gsub("CALL_CLIENT",@call_client).gsub("CALL_USER_UID", @user_uid)
   end
   
 
@@ -430,4 +463,25 @@ class Broadworks < Object
   STRING
   msg.gsub("CALL_USER_UID",@user_uid).gsub("CALL_ID",call_id)
   end
+  
+  def follow_script user
+  msg = <<-STRING
+  <?xml version="1.0" encoding="UTF-8"?> 
+  <BroadsoftDocument protocol="CAP" version="14.0"> 
+    <command commandType="monitoringUsersRequest"> 
+      <commandData> 
+        <user userType="AttendantConsole" userUid="CALL_USER_UID"> 
+          <monitoring monType="Add"/> 
+          <monUser>USER</monUser> 
+          <applicationId>THCApplication</applicationId> 
+        </user> 
+      </commandData> 
+    </command> 
+  </BroadsoftDocument> 
+  STRING
+  msg.gsub("CALL_USER_UID",@user_uid).gsub("USER",user)
+  end
+  
+  
+  
 end

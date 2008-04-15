@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -wKU
 # Thomas S. Howe wrote it, but the world owns it. Have at it.
 #
 # Original Author : Thomas Howe, http://www.thomashowe.com
@@ -18,7 +17,7 @@ else
   MY_DB_NAME = ARGV[0]
 end
 puts "Using database #{MY_DB_NAME}"
-MY_DB = SQLite3::Database.new(MY_DB_NAME)
+#MY_DB = SQLite3::Database.new(MY_DB_NAME)
 
 # get active record set up
 ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => MY_DB_NAME)
@@ -30,8 +29,10 @@ end
 class Command < ActiveRecord::Base
 end
 
+logger = Logger.new(STDOUT)
+
 # Startup the Broadworks stack.
-bs = Broadworks.new("broadworks sever url", "2208", "user@broadsoft.com", "password")
+bs = Broadworks.new("ews.ihs.broadsoft.com", "2208", "thowe1@broadsoft.com", "Password1", false, logger)
 
 bs.assign_call_function { |info|
   # We need to put this information into the database.  Let's try that, shall we?
@@ -61,7 +62,8 @@ bs.assign_call_function { |info|
     end
   end
 }
-
+bs.follow "thowe1@broadsoft.com"
+#bs.dial "15083649972"
 puts "Broadsoft application running. Press CTL-C to exit"
 trap "SIGINT", proc {
   puts "Control C Caught.... Now exiting...\n"
