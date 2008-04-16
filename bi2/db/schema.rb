@@ -11,9 +11,6 @@
 
 ActiveRecord::Schema.define(:version => 10) do
 
-# Could not dump table "booth_staff" because of following StandardError
-#   Unknown type '' for column 'First Name'
-
   create_table "calls", :force => true do |t|
     t.string   "user"
     t.string   "bs_id"
@@ -33,29 +30,10 @@ ActiveRecord::Schema.define(:version => 10) do
     t.datetime "updated_at"
   end
 
-  create_table "cdrs", :force => true do |t|
-    t.string   "callid"
-    t.string   "remotename"
-    t.string   "remotenum"
-    t.datetime "callstart"
-    t.datetime "callend"
-    t.string   "direction"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "commands", :force => true do |t|
     t.string   "command"
     t.string   "additional_data"
     t.string   "call_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "contacts", :force => true do |t|
-    t.string   "number"
-    t.integer  "basecampid"
-    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -84,9 +62,6 @@ ActiveRecord::Schema.define(:version => 10) do
     t.integer  "highrise_lead_id"
   end
 
-# Could not dump table "linkedin_connections" because of following StandardError
-#   Unknown type '' for column 'First Name'
-
   create_table "localcaches", :force => true do |t|
     t.integer  "basecampid"
     t.string   "name"
@@ -97,30 +72,5 @@ ActiveRecord::Schema.define(:version => 10) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "servers", :force => true do |t|
-    t.string   "host"
-    t.string   "port"
-    t.string   "call_client"
-    t.string   "password"
-    t.string   "user_uid"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "sessions", :force => true do |t|
-    t.string   "bs_id"
-    t.string   "userUid"
-    t.string   "offhook"
-    t.string   "numcalls"
-    t.integer  "maxcalls"
-    t.boolean  "epControl"
-    t.boolean  "bPhone"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-# Could not dump table "von_spring_pre" because of following StandardError
-#   Unknown type '' for column 'First Name'
 
 end

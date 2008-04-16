@@ -1,6 +1,9 @@
-<div id="top_menu"> 
+<div display: inline; id="top_menu"> 
+	
 </div> 
-
+<div display: inline; id="logout"> 
+	<%= button_to "Logout", :action => :logout %> 	
+</div> 
 
 <%= periodically_call_remote :url => {:action => "get_call_status", :user_id => 1155}, 
                               	:frequency => 2 %> 
@@ -19,6 +22,3 @@
 <iframe id="normal" height=3000 width=1200 src="http://www.thethomashowecompany.com" >
   Alternative text for browsers that do not understand IFrames.
 </iframe>
-
-
-

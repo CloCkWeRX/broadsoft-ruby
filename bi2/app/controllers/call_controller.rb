@@ -2,11 +2,17 @@
 class CallController < ApplicationController
   
   def index
+    if session[:user_login].nil?
+      redirect_to :action => :login
+    end
+    
   end
   def get_call_status
+    if session[:user_login].nil?
+      redirect_to :action => :login
+    end
     @result = "Not currently in call"
-    puts session[:display_info]
-    c = Call.find(:first, :order => "created_at DESC")
+    c = Call.find_by_user(session[:user_login])
     unless c.nil?
       case c.state
        when 1..2
@@ -41,5 +47,21 @@ class CallController < ApplicationController
     c.command = "dial"
     c.additional_data = params[:id]
     c.save
+  end
+  def start
+    session[:user_login] = params[:user]
+    c = Command.new
+    c.command = "follow"
+    c.additional_data = params[:user]
+    c.save
+    redirect_to :action => :index 
+  end
+  def logout
+    session[:user_login] = nil
+    c = Command.new
+    c.command = "drop"
+    c.additional_data = params[:user]
+    c.save
+    redirect_to :action => :login 
   end
 end
