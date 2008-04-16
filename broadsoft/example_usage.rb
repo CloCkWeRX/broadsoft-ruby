@@ -61,8 +61,9 @@ bs.assign_call_function { |info|
   end
 }
 
-bs.follow "mlauricella@broadsoft.com"
-bs.follow "tradeshow1@broadsoft.com"
+#bs.follow "mlauricella@broadsoft.com"
+#bs.follow "tradeshow1@broadsoft.com"
+bs.follow "thowe1@broadsoft.com"
 #bs.dial "15083649972"
 puts "Broadsoft application running. Press CTL-C to exit"
 trap "SIGINT", proc {
@@ -86,6 +87,10 @@ while true
       bs.release c.call_id 
     when "hold"
       bs.hold c.call_id 
+    when "follow"
+      bs.follow c.additional_data
+    when "drop"
+      bs.drop c.additional_data
     end
     c.destroy    
   } 

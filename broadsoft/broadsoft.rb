@@ -284,8 +284,12 @@ class Broadworks < Object
     send release_script(call_id)
   end
   def follow user
-    raise "Cannot control a phone when in control mode" if @call_control
+    raise "Cannot control a phone when in attendant mode" if @call_control
     send follow_script(user)
+  end
+  def drop user
+    raise "Cannot control a phone when in attendant mode" if @call_control
+    send drop_script(user)
   end
   def heartbeat
     send heartbeat_script
@@ -482,6 +486,23 @@ class Broadworks < Object
   msg.gsub("CALL_USER_UID",@user_uid).gsub("USER",user)
   end
   
+  def drop_script user
+  msg = <<-STRING
+  <?xml version="1.0" encoding="UTF-8"?> 
+  <BroadsoftDocument protocol="CAP" version="14.0"> 
+    <command commandType="monitoringUsersRequest"> 
+      <commandData> 
+        <user userType="AttendantConsole" userUid="CALL_USER_UID"> 
+          <monitoring monType="Delete"/> 
+          <monUser>USER</monUser> 
+          <applicationId>THCApplication</applicationId> 
+        </user> 
+      </commandData> 
+    </command> 
+  </BroadsoftDocument> 
+  STRING
+  msg.gsub("CALL_USER_UID",@user_uid).gsub("USER",user)
+  end
   
   
 end
