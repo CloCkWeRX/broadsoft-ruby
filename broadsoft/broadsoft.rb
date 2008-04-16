@@ -285,11 +285,11 @@ class Broadworks < Object
   end
   def follow user
     raise "Cannot control a phone when in attendant mode" if @call_control
-    send follow_script(user)
+    send follow_script(user)  unless user.nil?
   end
   def drop user
     raise "Cannot control a phone when in attendant mode" if @call_control
-    send drop_script(user)
+    send drop_script(user) unless user.nil? 
   end
   def heartbeat
     send heartbeat_script
