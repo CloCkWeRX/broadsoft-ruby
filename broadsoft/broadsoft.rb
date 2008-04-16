@@ -223,7 +223,7 @@ class Broadworks < Object
     case message["command"][0]["commandType"]
       when "callUpdate"      
         logger.info "Dispatching call update message"     
-        info = message["command"][0]["commandData"][0]["user"][0]["call"][0]
+        info = message["command"][0]["commandData"][0]["user"][0]
         @call_function.call(info) unless @call_function.nil?  
            
       when "sessionUpdate"

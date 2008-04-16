@@ -37,32 +37,32 @@ bs = Broadworks.new("ews.ihs.broadsoft.com", "2208", "thowe1@broadsoft.com", "Pa
 bs.assign_call_function { |info|
   # We need to put this information into the database.  Let's try that, shall we?
 
-  c = Call.find_by_callid(info["callId"])
+  p info
+  
+  c = Call.find_by_callid(info["call"][0]["callId"])
   if c.nil?
     c = Call.new
-    c.user = info["user"][0] unless info["user"].nil?
-    c.remote_country_code = info["remoteCountryCode"][0] unless info["remoteCountryCode"].nil?
-    c.personality = info["personality"][0] unless info["personality"].nil?
-    c.callid = info["callId"]
-    c.calltype = info["callType"][0] unless info["callType"].nil?
-    c.release_cause = info["releaseCause"][0] unless info["releaseCause"].nil?
-    c.remote_number = info["remoteNumber"][0] unless info["remoteNumber"].nil?
-    c.appearance = info["appearance"][0] unless info["appearance"].nil?
-    c.extTrackingid = info["extTrackingId"]
-    c.remote_name = info["remoteName"][0] unless info["remoteName"].nil?
-    c.state = info["state"][0] unless info["state"].nil?
+    c.user = info["monitoredUserId"][0] unless info["monitoredUserId"][0].nil?
+    c.remote_number = info["call"][0]["remoteNumber"][0] unless info["call"][0]["remoteNumber"].nil?
+    c.callid = info["call"][0]["callId"]
+    c.calltype = info["call"][0]["callType"][0] unless info["call"][0]["callType"].nil?
+    c.extTrackingid = info["call"][0]["extTrackingId"]
+    c.remote_name = info["call"][0]["remoteName"][0] unless info["call"][0]["remoteName"].nil?
+    c.state = info["call"][0]["state"][0] unless info["call"][0]["state"].nil?
     c.save
   else
-    case info["state"][0]
+    case info["call"][0]["state"][0]
       when "5"
         c.destroy
       else
-        c.state = info["state"][0]
+        c.state = info["call"][0]["state"][0]
         c.save
     end
   end
 }
-bs.follow "thowe1@broadsoft.com"
+
+bs.follow "mlauricella@broadsoft.com"
+bs.follow "tradeshow1@broadsoft.com"
 #bs.dial "15083649972"
 puts "Broadsoft application running. Press CTL-C to exit"
 trap "SIGINT", proc {
