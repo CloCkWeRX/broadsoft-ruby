@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
     s.author    =   "Thomas McCarthy-Howe"
     s.email     =   "howethomas @nospam@ aol.com"
     s.summary   =   "A package for controllign a Broadworks switch."
-    s.files     =   FileList['lib/*.rb', 'test/*'].to_a
+    s.files     =   `git ls-files`.split($/)
     s.require_path  =   "lib"
     s.homepage = "http://broadsoft.rubyforge.org" 
     s.rubyforge_project = 'broadsoft'
