@@ -1,7 +1,4 @@
-require 'rubygems'
-require 'rubygems/package_task'
-
-spec = Gem::Specification.new do |s|
+Gem::Specification.new do |s|
     s.platform  =   Gem::Platform::RUBY
     s.name      =   "broadsoft"
     s.version   =   "0.1.0"
@@ -15,11 +12,3 @@ spec = Gem::Specification.new do |s|
     s.has_rdoc  =   true
     s.extra_rdoc_files  =   ["README"]
 end
-
-Rake::GemPackageTask.new(spec) do |pkg|
-    pkg.need_tar = true
-end
-
-task :default => "pkg/#{spec.name}-#{spec.version}.gem" do
-    puts "generated latest version"
-end 
