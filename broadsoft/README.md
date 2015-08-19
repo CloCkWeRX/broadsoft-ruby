@@ -1,3 +1,8 @@
+## What is this?
+A fork of the old rubyforge project for interacting with the Broadsoft API.
+
+
+## Original
 We're really happy to be partnering on with Broadsoft as part of their
 developer's and extended marketplace. This is the first part of three posts
 we'll be doing on the work we've been doing with their platform. In this first
@@ -31,7 +36,9 @@ drop dead easy to install, configure and manage a user account.
 First, installation is simple. From any ruby development machine with gems
 installed, say :
 
+```
 gem install broadsoft
+```
 
 That's it. You're ready to go. If you want to play around with it, jump into
 the interactive ruby browser (irb), and have at it. First, include gems and
@@ -73,32 +80,32 @@ class Call < ActiveRecord::Base
 end
 
 bs.assign_call_function { |info|
-# We need to put this information into the database.  Let's try that, shall we?
-
-c = Call.find_by_callid(info["callId"])
-if c.nil?
-c = Call.new
-c.user = info["user"][0] unless info["user"].nil?
-c.remote_country_code = info["remoteCountryCode"][0] unless info["remoteCountryCode"].nil?
-c.personality = info["personality"][0] unless info["personality"].nil?
-c.callid = info["callId"]
-c.calltype = info["callType"][0] unless info["callType"].nil?
-c.release_cause = info["releaseCause"][0] unless info["releaseCause"].nil?
-c.remote_number = info["remoteNumber"][0] unless info["remoteNumber"].nil?
-c.appearance = info["appearance"][0] unless info["appearance"].nil?
-c.extTrackingid = info["extTrackingId"]
-c.remote_name = info["remoteName"][0] unless info["remoteName"].nil?
-c.state = info["state"][0] unless info["state"].nil?
-c.save
-else
-case info["state"][0]
-when "5"
-c.destroy
-else
-c.state = info["state"][0]
-c.save
-end
-end
+  # We need to put this information into the database.  Let's try that, shall we?
+  
+  c = Call.find_by_callid(info["callId"])
+  if c.nil?
+    c = Call.new
+    c.user = info["user"][0] unless info["user"].nil?
+    c.remote_country_code = info["remoteCountryCode"][0] unless info["remoteCountryCode"].nil?
+    c.personality = info["personality"][0] unless info["personality"].nil?
+    c.callid = info["callId"]
+    c.calltype = info["callType"][0] unless info["callType"].nil?
+    c.release_cause = info["releaseCause"][0] unless info["releaseCause"].nil?
+    c.remote_number = info["remoteNumber"][0] unless info["remoteNumber"].nil?
+    c.appearance = info["appearance"][0] unless info["appearance"].nil?
+    c.extTrackingid = info["extTrackingId"]
+    c.remote_name = info["remoteName"][0] unless info["remoteName"].nil?
+    c.state = info["state"][0] unless info["state"].nil?
+    c.save
+  else
+    case info["state"][0]
+    when "5"
+      c.destroy
+    else
+      c.state = info["state"][0]
+      c.save
+    end
+  end
 }
 ```
 And that's pretty much it. In the next two posts, we'll explain how you can
