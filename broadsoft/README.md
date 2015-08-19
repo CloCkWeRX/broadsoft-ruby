@@ -37,37 +37,37 @@ That's it. You're ready to go. If you want to play around with it, jump into
 the interactive ruby browser (irb), and have at it. First, include gems and
 the broadsoft gem:
 
-
+```
 irb(main):001:0> require 'rubygems'
 => true
 irb(main):002:0> require 'broadsoft'
 => true
-
+```
 then all you need to do is login.
 
-
+```
 bs = Broadworks.new("example.broadsoft.com", "2208", "demo@broadsoft.com", "youdontcare")
 
 => #<Broadworks:0x11bc6b8 @user_uid="270384658", @port="2208", @t=#<TCPSocket:0x11bc604>, @host="example.broadsoft.com", @password="youdontcare", @logger=#<Logger:0x11bc67c @logdev=#<Logger::LogDevice:0x11bc618 @shift_age=nil, @filename=nil, @mutex=#<Logger::LogDevice::LogDeviceMutex:0x11bc5f0 @mon_waiting_queue=[], @mon_entering_queue=[], @mon_count=0, @mon_owner=nil>, @dev=#<IO:0x2e7d4>, @shift_size=nil>, @formatter=nil, @default_formatter=#<Logger::Formatter:0x11bc654 @datetime_format=nil>, @level=2, @progname=nil>, @call_client="demo@broadsoft.com">
-
+```
 that's it. Your'e ready to go. Want to make your phone call somebody? Eeeeasy.
-
+```
 bs.dial "15088154321"
-
+```
 We also implemented answer, hold and release. (Still have some of the more
 exotic park and conferencing stuff to implement; we'll see who actually cares
 about those.) Call notifications? Eeeeasy too, and in fine Ruby fashion:
-
+```
 bs.assign_call_function { |info|
 
 # your code goes here.
 }
-
+```
 As happens in ruby, info is an object containing all of the call variables we
 need. In our business intelligence application, we use these callbacks to
 populate a database so we can use it to drive our user interface from a ruby
 on rails application. Here's what we actually did:
-
+```
 # Create your AR class
 class Call < ActiveRecord::Base
 end
@@ -100,7 +100,7 @@ c.save
 end
 end
 }
-
+```
 And that's pretty much it. In the next two posts, we'll explain how you can
 use this gem to implement a business intelligence mashup using 37 signal's
 Highrise product, and then we'll show you how we did a quick and simple click
