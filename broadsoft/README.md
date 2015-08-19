@@ -1,6 +1,8 @@
 ## What is this?
 A fork of the old rubyforge project for interacting with the Broadsoft API.
 
+I believe the entire project is licenced under the LGPL, but have reached out to the original author to confirm.
+
 
 ## Original
 We're really happy to be partnering on with Broadsoft as part of their
